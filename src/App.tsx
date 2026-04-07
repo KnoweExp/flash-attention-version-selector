@@ -395,7 +395,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
             
             {/* Vast AI */}
             <a
-              href="https://console.vast.ai/?ref=*&utm_source=flash-attn-installer"
+              href="https://cloud.vast.ai/?ref_id=322456"
               target="_blank"
               rel="noopener noreferrer"
               className={`group relative rounded-2xl p-5 transition-all duration-300 overflow-hidden ${
@@ -430,7 +430,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
 
             {/* RunPod */}
             <a
-              href="https://runpod.io?ref=*&utm_source=flash-attn-installer"
+              href="https://runpod.io?ref=h56q789e"
               target="_blank"
               rel="noopener noreferrer"
               className={`group relative rounded-2xl p-5 transition-all duration-300 overflow-hidden ${
