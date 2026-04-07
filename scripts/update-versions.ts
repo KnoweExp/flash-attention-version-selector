@@ -16,7 +16,7 @@ const OUTPUT_PATH = resolve(__dirname, "../src/data/versions.json");
 const FLASH_ATTN_REPO = "Dao-AILab/flash-attention";
 
 // Known CUDA pip indexes for PyTorch
-const CUDA_INDEXES = ["cu118", "cu121", "cu124", "cu126", "cu128"];
+const CUDA_INDEXES = ["cu118", "cu121", "cu124", "cu126", "cu128", "cu130"];
 
 const headers: Record<string, string> = {
   Accept: "application/vnd.github+json",
@@ -151,6 +151,8 @@ async function main() {
     string,
     { pythons: Set<string>; torches: Set<string> }
   >();
+  // Build flash+torch -> cuda tag mapping (e.g. "2.8.3|2.5" -> "cu12")
+  const flashTorchCudaTag = new Map<string, string>();
   for (const w of allWheels) {
     if (!flashData.has(w.flashVersion)) {
       flashData.set(w.flashVersion, {
@@ -161,6 +163,12 @@ async function main() {
     const d = flashData.get(w.flashVersion)!;
     d.pythons.add(w.python);
     d.torches.add(w.torch);
+    // Store the CUDA tag — prefer cu12 over cu11/cu118/cu123
+    const key = `${w.flashVersion}|${w.torch}`;
+    const existing = flashTorchCudaTag.get(key);
+    if (!existing || w.cuda === "cu12" || (w.cuda.startsWith("cu12") && !existing.startsWith("cu12"))) {
+      flashTorchCudaTag.set(key, w.cuda);
+    }
   }
 
   // Get unique python versions from wheels (filter >= 3.9)
@@ -267,10 +275,13 @@ async function main() {
     });
     const bestFlash =
       compatFlash.length > 0 ? compatFlash[compatFlash.length - 1] : sortedFlash[sortedFlash.length - 1];
+    // Get the CUDA tag for the wheel URL
+    const cudaTag = flashTorchCudaTag.get(`${bestFlash}|${tvMinor}`) || "cu12";
     return {
       value: tv,
       label: `PyTorch ${tv}`,
       flash: bestFlash,
+      cudaTag,
     };
   });
 

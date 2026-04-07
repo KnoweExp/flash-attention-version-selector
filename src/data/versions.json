@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-04-07T03:02:39.748Z",
+  "_generatedAt": "2026-04-07T03:25:48.040Z",
   "_source": "https://github.com/Dao-AILab/flash-attention/releases",
   "defaults": {
     "python": "3.11",
@@ -82,7 +82,8 @@
         "12.1",
         "12.4",
         "12.6",
-        "12.8"
+        "12.8",
+        "13.0"
       ],
       "torch": [
         "2.2",
@@ -191,113 +192,143 @@
         "2.9.1",
         "2.10.0"
       ]
+    },
+    {
+      "value": "13.0",
+      "label": "CUDA 13.0",
+      "torch": [
+        "2.9.0",
+        "2.9.1",
+        "2.10.0"
+      ]
     }
   ],
   "pytorchVersions": [
     {
       "value": "2.0.0",
       "label": "PyTorch 2.0.0",
-      "flash": "2.6.3"
+      "flash": "2.6.3",
+      "cudaTag": "cu118"
     },
     {
       "value": "2.0.1",
       "label": "PyTorch 2.0.1",
-      "flash": "2.6.3"
+      "flash": "2.6.3",
+      "cudaTag": "cu118"
     },
     {
       "value": "2.1.0",
       "label": "PyTorch 2.1.0",
-      "flash": "2.7.3"
+      "flash": "2.7.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.1.1",
       "label": "PyTorch 2.1.1",
-      "flash": "2.7.3"
+      "flash": "2.7.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.1.2",
       "label": "PyTorch 2.1.2",
-      "flash": "2.7.3"
+      "flash": "2.7.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.2.0",
       "label": "PyTorch 2.2.0",
-      "flash": "2.7.4.post1"
+      "flash": "2.7.4.post1",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.2.1",
       "label": "PyTorch 2.2.1",
-      "flash": "2.7.4.post1"
+      "flash": "2.7.4.post1",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.2.2",
       "label": "PyTorch 2.2.2",
-      "flash": "2.7.4.post1"
+      "flash": "2.7.4.post1",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.3.0",
       "label": "PyTorch 2.3.0",
-      "flash": "2.7.4.post1"
+      "flash": "2.7.4.post1",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.3.1",
       "label": "PyTorch 2.3.1",
-      "flash": "2.7.4.post1"
+      "flash": "2.7.4.post1",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.4.0",
       "label": "PyTorch 2.4.0",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.4.1",
       "label": "PyTorch 2.4.1",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.5.0",
       "label": "PyTorch 2.5.0",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.5.1",
       "label": "PyTorch 2.5.1",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.6.0",
       "label": "PyTorch 2.6.0",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.7.0",
       "label": "PyTorch 2.7.0",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.7.1",
       "label": "PyTorch 2.7.1",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.8.0",
       "label": "PyTorch 2.8.0",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.9.0",
       "label": "PyTorch 2.9.0",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.9.1",
       "label": "PyTorch 2.9.1",
-      "flash": "2.8.3"
+      "flash": "2.8.3",
+      "cudaTag": "cu12"
     },
     {
       "value": "2.10.0",
       "label": "PyTorch 2.10.0",
-      "flash": "2.8.1"
+      "flash": "2.8.1",
+      "cudaTag": "cu12"
     }
   ],
   "flashVersions": [

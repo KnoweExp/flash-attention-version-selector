@@ -97,18 +97,16 @@ function App() {
     setFlashVersion(getFlashForTorch(torchVer))
   }
 
-  const getFlashWheelUrl = () => {
-    const cp = `cp${pythonVersion.replace('.', '')}`
-    const torchMinor = pytorchVersion.split('.').slice(0, 2).join('.')
-    const cudaMajor = cudaVersion.split('.')[0]
-    return `https://github.com/Dao-AILab/flash-attention/releases/download/v${flashVersion}/flash_attn-${flashVersion}%2Bcu${cudaMajor}torch${torchMinor}cxx11abiTRUE-${cp}-${cp}-linux_x86_64.whl`
+  const getFlashCudaTag = () => {
+    const pt = pytorchVersions.find(p => p.value === pytorchVersion)
+    return (pt as any)?.cudaTag || 'cu12'
   }
 
   const getFlashInstallCmd = () => {
     const cp = `cp${pythonVersion.replace('.', '')}`
     const torchMinor = pytorchVersion.split('.').slice(0, 2).join('.')
-    const cudaMajor = cudaVersion.split('.')[0]
-    return `pip install "https://github.com/Dao-AILab/flash-attention/releases/download/v${flashVersion}/flash_attn-${flashVersion}+cu${cudaMajor}torch${torchMinor}cxx11abiTRUE-${cp}-${cp}-linux_x86_64.whl"`
+    const cudaTag = getFlashCudaTag()
+    return `pip install "https://github.com/Dao-AILab/flash-attention/releases/download/v${flashVersion}/flash_attn-${flashVersion}+${cudaTag}torch${torchMinor}cxx11abiTRUE-${cp}-${cp}-linux_x86_64.whl"`
   }
 
   const generateCommands = () => {
@@ -122,7 +120,7 @@ pip install torch==${pytorchVersion} torchvision torchaudio \\
 # 2. Install flash-attn (pre-built wheel)
 ${getFlashInstallCmd()}
 
-# If the wheel above doesn't exist, fall back to building from source:
+# If the wheel above fails, fall back to building from source:
 # pip install flash-attn==${flashVersion} --no-build-isolation
 
 # 3. Verify installation
