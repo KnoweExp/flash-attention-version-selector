@@ -25,40 +25,17 @@ function App() {
     }
   }, [theme])
 
-  // Auto-sync flash version when PyTorch changes
-  useEffect(() => {
-    const pt = pytorchVersions.find(p => p.value === pytorchVersion)
-    if (pt && pt.flash !== flashVersion) {
-      setFlashVersion(pt.flash)
-    }
-  }, [pytorchVersion])
+  // ── Helper functions (pure, no state mutations) ──
 
-  // Auto-fix CUDA if current selection is not compatible with Python
-  useEffect(() => {
-    const py = pythonVersions.find(p => p.value === pythonVersion)
-    if (py && !py.cuda.includes(cudaVersion)) {
-      setCudaVersion(py.cuda[py.cuda.length - 1])
-    }
-  }, [pythonVersion])
-
-  // Auto-fix PyTorch if current selection is not compatible with CUDA or Python
-  useEffect(() => {
-    const available = getAvailableTorchVersions()
-    if (!available.includes(pytorchVersion) && available.length > 0) {
-      setPytorchVersion(available[available.length - 1])
-    }
-  }, [cudaVersion, pythonVersion])
-
-  const isCudaCompatible = (cudaValue: string) => {
-    const py = pythonVersions.find(p => p.value === pythonVersion)
+  const isCudaCompatible = (cudaValue: string, pyVer = pythonVersion) => {
+    const py = pythonVersions.find(p => p.value === pyVer)
     return py ? py.cuda.includes(cudaValue) : true
   }
 
-  const getAvailableTorchVersions = () => {
-    const cuda = cudaVersions.find(c => c.value === cudaVersion)
+  const getAvailableTorchVersions = (cudaVer = cudaVersion, pyVer = pythonVersion) => {
+    const cuda = cudaVersions.find(c => c.value === cudaVer)
     const cudaTorch = cuda?.torch || pytorchVersions.map(p => p.value)
-    // Also filter by Python compatibility (torch minor must match)
-    const py = pythonVersions.find(p => p.value === pythonVersion)
+    const py = pythonVersions.find(p => p.value === pyVer)
     if (py && 'torch' in py) {
       const pyTorchMinors = (py as any).torch as string[]
       return cudaTorch.filter(tv => {
@@ -69,10 +46,69 @@ function App() {
     return cudaTorch
   }
 
+  const getFlashForTorch = (torchVer: string) => {
+    const pt = pytorchVersions.find(p => p.value === torchVer)
+    return pt?.flash || flashVersion
+  }
+
   const isCompatible = () => {
     const cuda = cudaVersions.find(c => c.value === cudaVersion)
     if (cuda && !cuda.torch.includes(pytorchVersion)) return false
     return true
+  }
+
+  // ── Cascading selection handlers (compute all dependent state in one go) ──
+
+  const selectPython = (pyVer: string) => {
+    setPythonVersion(pyVer)
+    // Fix CUDA if needed
+    let newCuda = cudaVersion
+    if (!isCudaCompatible(cudaVersion, pyVer)) {
+      const py = pythonVersions.find(p => p.value === pyVer)
+      newCuda = py?.cuda[py.cuda.length - 1] || cudaVersion
+      setCudaVersion(newCuda)
+    }
+    // Fix PyTorch if needed
+    const available = getAvailableTorchVersions(newCuda, pyVer)
+    let newTorch = pytorchVersion
+    if (!available.includes(pytorchVersion) && available.length > 0) {
+      newTorch = available[available.length - 1]
+      setPytorchVersion(newTorch)
+    }
+    // Sync flash
+    setFlashVersion(getFlashForTorch(newTorch))
+  }
+
+  const selectCuda = (cudaVer: string) => {
+    setCudaVersion(cudaVer)
+    // Fix PyTorch if needed
+    const available = getAvailableTorchVersions(cudaVer, pythonVersion)
+    let newTorch = pytorchVersion
+    if (!available.includes(pytorchVersion) && available.length > 0) {
+      newTorch = available[available.length - 1]
+      setPytorchVersion(newTorch)
+    }
+    // Sync flash
+    setFlashVersion(getFlashForTorch(newTorch))
+  }
+
+  const selectPyTorch = (torchVer: string) => {
+    setPytorchVersion(torchVer)
+    setFlashVersion(getFlashForTorch(torchVer))
+  }
+
+  const getFlashWheelUrl = () => {
+    const cp = `cp${pythonVersion.replace('.', '')}`
+    const torchMinor = pytorchVersion.split('.').slice(0, 2).join('.')
+    const cudaMajor = cudaVersion.split('.')[0]
+    return `https://github.com/Dao-AILab/flash-attention/releases/download/v${flashVersion}/flash_attn-${flashVersion}%2Bcu${cudaMajor}torch${torchMinor}cxx11abiTRUE-${cp}-${cp}-linux_x86_64.whl`
+  }
+
+  const getFlashInstallCmd = () => {
+    const cp = `cp${pythonVersion.replace('.', '')}`
+    const torchMinor = pytorchVersion.split('.').slice(0, 2).join('.')
+    const cudaMajor = cudaVersion.split('.')[0]
+    return `pip install "https://github.com/Dao-AILab/flash-attention/releases/download/v${flashVersion}/flash_attn-${flashVersion}+cu${cudaMajor}torch${torchMinor}cxx11abiTRUE-${cp}-${cp}-linux_x86_64.whl"`
   }
 
   const generateCommands = () => {
@@ -83,17 +119,14 @@ function App() {
 pip install torch==${pytorchVersion} torchvision torchaudio \\
     --index-url https://download.pytorch.org/whl/cu${cudaVersion.replace('.', '')}
 
-# 2. Install flash-attn (requires compilation)
-pip install flash-attn --no-build-isolation \\
-    --upgrade --verbose
+# 2. Install flash-attn (pre-built wheel)
+${getFlashInstallCmd()}
 
-# Or with specific commit (more reliable):
-pip install flash-attn==${flashVersion} \\
-    --index-url https://wheels.example.com/whl/${cudaVersion}
+# If the wheel above doesn't exist, fall back to building from source:
+# pip install flash-attn==${flashVersion} --no-build-isolation
 
 # 3. Verify installation
-python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {torch.cuda.is_available()}')"
-python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"`
+python -c "import torch; from flash_attn import flash_attn_func; print('Flash Attention OK')"`
   }
 
   const copyToClipboard = async (text: string) => {
@@ -205,7 +238,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
               {pythonVersions.map(py => (
                 <button
                   key={py.value}
-                  onClick={() => setPythonVersion(py.value)}
+                  onClick={() => selectPython(py.value)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     pythonVersion === py.value
                       ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg shadow-orange-500/30'
@@ -239,7 +272,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
                 return (
                   <button
                     key={cuda.value}
-                    onClick={() => compatible && setCudaVersion(cuda.value)}
+                    onClick={() => compatible && selectCuda(cuda.value)}
                     disabled={!compatible}
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                       !compatible
@@ -276,7 +309,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
             </div>
             <select
               value={pytorchVersion}
-              onChange={(e) => setPytorchVersion(e.target.value)}
+              onChange={(e) => selectPyTorch(e.target.value)}
               className={`w-full rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-500/50 cursor-pointer appearance-none transition-all ${
                 theme === 'dark'
                   ? 'bg-white/10 border border-white/20 text-white'
@@ -562,7 +595,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
                     <span className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Install Flash Attention {flashVersion}</span>
                   </div>
                   <button
-                    onClick={() => copySingleCommand(`pip install flash-attn==${flashVersion} --no-build-isolation --upgrade`)}
+                    onClick={() => copySingleCommand(getFlashInstallCmd())}
                     className={`px-4 py-2 rounded-lg text-sm transition-all ${
                       theme === 'dark'
                         ? 'bg-white/10 hover:bg-white/20 text-white'
@@ -574,9 +607,7 @@ python -c "from flash_attn import flash_attn_func; print('Flash Attention: OK')"
                 </div>
                 <div className="px-5 py-4 font-mono text-sm">
                   <code className={theme === 'dark' ? 'text-green-300 break-all' : 'text-green-700 break-all'}>
-                    {`pip install flash-attn==${flashVersion} \\`}
-                    <br />
-                    {`    --no-build-isolation --upgrade`}
+                    {getFlashInstallCmd()}
                   </code>
                 </div>
               </div>
