@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-04-07T08:34:41.066Z",
+  "_generatedAt": "2026-04-08T08:33:31.299Z",
   "_source": "https://github.com/Dao-AILab/flash-attention/releases",
   "defaults": {
     "python": "3.11",
@@ -105,13 +105,15 @@
         "12.1",
         "12.4",
         "12.6",
-        "12.8"
+        "12.8",
+        "13.0"
       ],
       "torch": [
         "2.5",
         "2.6",
         "2.7",
-        "2.8"
+        "2.8",
+        "2.10"
       ]
     }
   ],
