@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-06-10T09:23:52.274Z",
+  "_generatedAt": "2026-06-11T09:39:01.484Z",
   "_source": "https://github.com/Dao-AILab/flash-attention/releases",
   "defaults": {
     "python": "3.11",
@@ -269,49 +269,49 @@
     {
       "value": "2.4.0",
       "label": "PyTorch 2.4.0",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.4.1",
       "label": "PyTorch 2.4.1",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.5.0",
       "label": "PyTorch 2.5.0",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.5.1",
       "label": "PyTorch 2.5.1",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.6.0",
       "label": "PyTorch 2.6.0",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.7.0",
       "label": "PyTorch 2.7.0",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.7.1",
       "label": "PyTorch 2.7.1",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
       "value": "2.8.0",
       "label": "PyTorch 2.8.0",
-      "flash": "2.8.3",
+      "flash": "2.8.3.post1",
       "cudaTag": "cu12"
     },
     {
@@ -353,6 +353,10 @@
     {
       "value": "2.8.3",
       "label": "flash-attn 2.8.3"
+    },
+    {
+      "value": "2.8.3.post1",
+      "label": "flash-attn 2.8.3.post1"
     }
   ]
 }
