@@ -1,5 +1,5 @@
 {
-  "_generatedAt": "2026-06-11T09:39:01.484Z",
+  "_generatedAt": "2026-06-12T09:33:13.067Z",
   "_source": "https://github.com/Dao-AILab/flash-attention/releases",
   "defaults": {
     "python": "3.11",
@@ -329,8 +329,8 @@
     {
       "value": "2.10.0",
       "label": "PyTorch 2.10.0",
-      "flash": "2.8.1",
-      "cudaTag": "cu12"
+      "flash": "2.8.3",
+      "cudaTag": "cu13"
     }
   ],
   "flashVersions": [
@@ -345,10 +345,6 @@
     {
       "value": "2.7.4.post1",
       "label": "flash-attn 2.7.4.post1"
-    },
-    {
-      "value": "2.8.1",
-      "label": "flash-attn 2.8.1"
     },
     {
       "value": "2.8.3",
